@@ -1,5 +1,5 @@
 ## Introduction
-This repo covering the local deployment and cl
+This repo covering the local deployment and cloud deployment of the model
 
 ## Local Deployment using streamlit
 This streamlit deploy is using catboost model result. The model that is used in
