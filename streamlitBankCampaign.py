@@ -6,17 +6,15 @@ import matplotlib.pyplot as plt
 from catboost import CatBoostClassifier
 from sklearn.metrics import classification_report
 
-# Load CatBoost Model from Current Directory
 def load_model():
     model_path = "catboost_model2.pkl"
     with open(model_path, 'rb') as file:
         return pickle.load(file)
 
-# Preprocess data to ensure categorical features are correctly formatted
 def preprocess_data(data, categorical_features):
     for col in categorical_features:
         if col in data.columns:
-            data[col] = data[col].astype(str)  # Ensure all categorical features are strings
+            data[col] = data[col].astype(str)  
     return data
 
 # Display SHAP Summary Plot
@@ -28,17 +26,15 @@ def plot_shap_values(model, data):
 
 # Main Streamlit App
 def main():
-    # Load Model and Define Categorical Features
+    # Load Model 
     model = load_model()
     categorical_features = ['job', 'housing', 'loan', 'contact', 'month', 'poutcome']
 
     # Load and Display Logo
     st.image("logo.jpg", use_column_width=True)
-
-    # Title
     st.title("Bank Marketing Campaign Prediction App")
 
-    # Sidebar Options
+    # Sidebar 
     st.sidebar.title("Choose Prediction Mode")
     prediction_choice = st.sidebar.radio(
         "Select an option:",
@@ -49,7 +45,6 @@ def main():
         # Single Prediction Section
         st.header("Single Prediction")
 
-        # Input fields for prediction
         user_input = {}
         user_input['age'] = st.number_input("Age", min_value=18, max_value=100, step=1)
         user_input['job'] = st.selectbox("Job", ['admin.', 'blue-collar', 'entrepreneur', 'housemaid', 'management',
@@ -79,7 +74,7 @@ def main():
                 st.experimental_rerun()
 
     elif prediction_choice == "Bulk Prediction":
-        # Bulk Prediction Section
+        # Bulk Prediction 
         st.header("Bulk Prediction")
         bulk_file = st.file_uploader("Upload CSV for Bulk Prediction", type=["csv"])
 
@@ -88,10 +83,10 @@ def main():
             st.write("Uploaded Data Preview:")
             st.dataframe(bulk_data.head())
 
-            # Preprocess bulk data
+            #  bulk data
             bulk_data = preprocess_data(bulk_data, categorical_features)
 
-            # Make predictions
+            #  predictions
             try:
                 bulk_predictions = model.predict(bulk_data)
                 bulk_data['Prediction'] = ['Yes' if pred == 1 else 'No' for pred in bulk_predictions]
@@ -99,7 +94,6 @@ def main():
                 st.write("Deposit Prediction:")
                 st.dataframe(bulk_data)
 
-                # Download results
                 csv = bulk_data.to_csv(index=False).encode('utf-8')
                 st.download_button(
                     label="Download Predictions",
